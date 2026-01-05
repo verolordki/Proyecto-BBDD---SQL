@@ -160,11 +160,11 @@ FROM payment;
 
 --27. ¿Qué películas se alquilan por encima del precio medio?
 
-SELECT f.title, p.amount
-FROM film f 
-JOIN rental r ON f.film_id = f.film_id 
-JOIN payment p ON r.rental_id = p.rental_id 
-WHERE p.amount > (SELECT AVG(amount) FROM payment);
+SELECT title, rental_rate
+FROM film
+WHERE rental_rate > (
+    SELECT AVG(rental_rate)
+    FROM film);
 
 --28. Muestra el id de los actores que hayan participado en más de 40 películas.
 
@@ -210,12 +210,14 @@ ORDER BY a.last_name, a.first_name;
 
 --33. Obtener todas las películas que tenemos y todos los registros de alquiler.
 
-SELECT f.title AS pelicula,
-       r.rental_id,
-       r.rental_date,
-       r.customer_id
+SELECT 
+    f.title AS pelicula,
+    r.rental_id,
+    r.rental_date,
+    r.customer_id
 FROM film f
-LEFT JOIN rental r ON f.film_id = f.film_id
+LEFT JOIN inventory i ON f.film_id = i.film_id
+LEFT JOIN rental r ON i.inventory_id = r.inventory_id
 ORDER BY f.title, r.rental_date;
 
 --34. Encuentra los 5 clientes que más dinero se hayan gastado con nosotros.
